@@ -1,57 +1,56 @@
-import { nanoid } from "nanoid";
-import { Component } from "react";
+// import { nanoid } from 'nanoid';
+import { useState } from 'react';
 import {
   Form,
   AddContactButton,
   AddContactInput,
-  AddContactLabel
-} from "./ContactForm.styled";
+  AddContactLabel,
+} from './ContactForm.styled';
 
-const INITIAL_STATE = {
-  name: "",
-  number: "",
-};
-export class ContactForm  extends Component {
-  state = INITIAL_STATE
+export const ContactForm = ({ addContact, onCheckUnique }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleChange = (evt) => {
-      const { name, value } = evt.target;
-      this.setState({ [name]: value })
+  const handleChangeName = evt => {
+    setName(evt.target.value);
+  };
+  const handleChangeNumber = evt => {
+    setNumber(evt.target.value);
   };
 
-  handleSubmitForm = evt => {
+  const handleSubmitForm = evt => {
     evt.preventDefault();
-    const {name, number} = this.state
-      const { addContact } = this.props;
-      const checkingUniqueContacts = this.checkUnique();
-      if (!checkingUniqueContacts) return 
-    addContact({ id: nanoid(), name, number });
-    this.reset();
-  };
-  
-  checkUnique = () => { 
-        const { name } = this.state;
-        const { onCheckUnique } = this.props;
-        if (!name) {
-            return false
-        }
-        return onCheckUnique(name);
-  }
-  
-  reset = () => this.setState(INITIAL_STATE);
 
-  render() {
-    const { name, number } = this.state;
+    const checkingUniqueContacts = checkUnique();
+    if (!checkingUniqueContacts) return;
+    const newContact = { name, number };
+    addContact(newContact);
+
+    reset();
+  };
+
+  const checkUnique = () => {
+    if (!name) {
+      return false;
+    }
+    return onCheckUnique(name);
+  };
+
+  const reset = () => {
+    setName('');
+    setNumber('');
+  };
+
   return (
     <>
-      <Form onSubmit={this.handleSubmitForm} key={this.id}>
+      <Form onSubmit={handleSubmitForm}>
         <AddContactLabel>
           Name
           <AddContactInput
             name="name"
             type="text"
             value={name}
-            onChange={this.handleChange}
+            onChange={handleChangeName}
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
@@ -65,13 +64,12 @@ export class ContactForm  extends Component {
             value={number}
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            onChange={this.handleChange}
+            onChange={handleChangeNumber}
             required
           />
         </AddContactLabel>
         <AddContactButton type="submit">Add contact</AddContactButton>
       </Form>
     </>
-    );
-  }
-}
+  );
+};
