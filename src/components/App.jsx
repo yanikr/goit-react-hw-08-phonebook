@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { ContactsList } from './ContactsList/ContactsList';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
-import { Section } from './Section/Section';
 import { nanoid } from 'nanoid';
 
 export const App = () => {
@@ -43,13 +42,15 @@ export const App = () => {
 
   return (
     <>
-      <Section title="Phonebook">
+      <div>
+        <h2>Phonebook</h2>
         <ContactForm addContact={addContact} onCheckUnique={checkContacts} />
-      </Section>
-      <Section title="Contacts">
+      </div>
+      <div>
+        <h2>Contacts</h2>
         <Filter filter={filter} onChange={filterInput} />
         <ContactsList contacts={filterContacts} onRemove={removeContact} />
-      </Section>
+      </div>
     </>
   );
 };
