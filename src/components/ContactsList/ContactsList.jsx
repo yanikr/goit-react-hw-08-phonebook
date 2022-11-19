@@ -1,37 +1,54 @@
-import { ContactsUl, ContactsLi, ContactsButton } from './ContactsList.styled';
-import PropTypes from 'prop-types';
-export const SingleContact = ({ id, name, number, onRemove }) => {
-  return (
-    <>
-      <ContactsLi>
-        - {name}: {number}
-        <ContactsButton onClick={() => onRemove(id)}>Remove</ContactsButton>
-      </ContactsLi>
-    </>
+import {
+  ContactsUl,
+  ContactsLi,
+  ContactsButton,
+  FilterP,
+  InputFilter,
+} from './ContactsList.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getFilter,
+  filterContacts,
+  deleteContact,
+} from './../../redux/contactsSlice';
+
+export const ContactsList = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilter);
+  const contacts = useSelector(state => state.text.contacts.items);
+
+  const deleteContactById = contactId => {
+    dispatch(deleteContact(contactId));
+    console.log(contactId);
+  };
+
+  const handleFilterChange = evt => {
+    dispatch(filterContacts(evt.target.value));
+  };
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
   );
-};
-export const ContactsList = ({ contacts, onRemove }) => {
+
   return (
     <>
+      <FilterP>Find contacts by name</FilterP>
+      <InputFilter
+        type="text"
+        name="filter"
+        value={filter}
+        onChange={handleFilterChange}
+      />
       <ContactsUl>
-        {contacts.map((contact, id) => (
-          <SingleContact {...contact} key={id} onRemove={onRemove} />
+        {filteredContacts.map(({ id, name, number }) => (
+          <ContactsLi key={id}>
+            <span>{name} : </span>
+            <span> ({number})</span>
+            <ContactsButton type="button" onClick={() => deleteContactById(id)}>
+              Remove
+            </ContactsButton>
+          </ContactsLi>
         ))}
       </ContactsUl>
     </>
   );
-};
-
-SingleContact.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
-  onRemove: PropTypes.func.isRequired,
-};
-
-ContactsList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.objectOf(PropTypes.string.isRequired).isRequired
-  ).isRequired,
-  onRemove: PropTypes.func.isRequired,
 };

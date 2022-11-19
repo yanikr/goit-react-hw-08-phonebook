@@ -1,5 +1,7 @@
-// import { nanoid } from 'nanoid';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
+import { nanoid } from 'nanoid';
 import {
   Form,
   AddContactButton,
@@ -7,39 +9,29 @@ import {
   AddContactLabel,
 } from './ContactForm.styled';
 
-export const ContactForm = ({ addContact, onCheckUnique }) => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+export const ContactForm = () => {
+  const [formValue, setFormValue] = useState({ name: '', number: '' });
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.text.contacts.items);
 
-  const handleChangeName = evt => {
-    setName(evt.target.value);
-  };
-  const handleChangeNumber = evt => {
-    setNumber(evt.target.value);
+  const handleChange = evt =>
+    setFormValue(val => ({ ...val, [evt.target.name]: evt.target.value }));
+
+  const checkContacts = data => {
+    const findContact = contacts.find(contact => contact.name === data.name);
+    if (findContact) {
+      return alert(`${data.name} is already in contacts`);
+    }
+    dispatch(addContact({ ...data, id: nanoid() }));
   };
 
   const handleSubmitForm = evt => {
     evt.preventDefault();
-
-    const checkingUniqueContacts = checkUnique();
-    if (!checkingUniqueContacts) return;
-    const newContact = { name, number };
-    addContact(newContact);
-
-    reset();
+    checkContacts(formValue);
+    setFormValue({ name: '', number: '' });
   };
 
-  const checkUnique = () => {
-    if (!name) {
-      return false;
-    }
-    return onCheckUnique(name);
-  };
-
-  const reset = () => {
-    setName('');
-    setNumber('');
-  };
+  const { name, number } = formValue;
 
   return (
     <>
@@ -48,9 +40,9 @@ export const ContactForm = ({ addContact, onCheckUnique }) => {
           Name
           <AddContactInput
             name="name"
-            type="text"
+            type="name"
             value={name}
-            onChange={handleChangeName}
+            onChange={handleChange}
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
@@ -64,7 +56,7 @@ export const ContactForm = ({ addContact, onCheckUnique }) => {
             value={number}
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            onChange={handleChangeNumber}
+            onChange={handleChange}
             required
           />
         </AddContactLabel>

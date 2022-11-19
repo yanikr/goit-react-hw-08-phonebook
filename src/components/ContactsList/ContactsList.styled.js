@@ -26,3 +26,9 @@ export const ContactsLi = styled.li`
   line-height: 26px;
   margin-bottom: 10px;
 `;
+export const InputFilter = styled.input`
+  margin-left: 200px;
+`;
+export const FilterP = styled.p`
+  margin-left: 200px;
+`;
