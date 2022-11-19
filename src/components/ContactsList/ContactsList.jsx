@@ -19,7 +19,6 @@ export const ContactsList = () => {
 
   const deleteContactById = contactId => {
     dispatch(deleteContact(contactId));
-    console.log(contactId);
   };
 
   const handleFilterChange = evt => {
