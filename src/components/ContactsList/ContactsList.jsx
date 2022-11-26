@@ -18,8 +18,8 @@ export const ContactsList = () => {
   const handleFilterChange = evt => {
     dispatch(filterContacts(evt.target.value));
   };
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
+  const filteredContacts = contacts.filter(({ text }) =>
+    text.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
