@@ -5,21 +5,15 @@ import {
   FilterP,
   InputFilter,
 } from './ContactsList.styled';
+import { deleteContacts } from './../../redux/operations';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getFilter,
-  filterContacts,
-  deleteContact,
-} from './../../redux/contactsSlice';
+import { getContacts } from './../../redux/contactsSlice';
+import { filterContacts, getFilter } from './../../redux/filterSlice';
 
 export const ContactsList = () => {
   const dispatch = useDispatch();
   const filter = useSelector(getFilter);
-  const contacts = useSelector(state => state.text.contacts.items);
-
-  const deleteContactById = contactId => {
-    dispatch(deleteContact(contactId));
-  };
+  const contacts = useSelector(getContacts);
 
   const handleFilterChange = evt => {
     dispatch(filterContacts(evt.target.value));
@@ -31,18 +25,16 @@ export const ContactsList = () => {
   return (
     <>
       <FilterP>Find contacts by name</FilterP>
-      <InputFilter
-        type="text"
-        name="filter"
-        value={filter}
-        onChange={handleFilterChange}
-      />
+      <InputFilter type="text" value={filter} onChange={handleFilterChange} />
       <ContactsUl>
-        {filteredContacts.map(({ id, name, number }) => (
+        {filteredContacts.map(({ id, text }) => (
           <ContactsLi key={id}>
-            <span>{name} : </span>
-            <span> ({number})</span>
-            <ContactsButton type="button" onClick={() => deleteContactById(id)}>
+            <span>{text.name} : </span>
+            <span> ({text.number})</span>
+            <ContactsButton
+              type="button"
+              onClick={() => dispatch(deleteContacts(id))}
+            >
               Remove
             </ContactsButton>
           </ContactsLi>
