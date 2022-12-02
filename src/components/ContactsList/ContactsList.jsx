@@ -5,10 +5,10 @@ import {
   FilterP,
   InputFilter,
 } from './ContactsList.styled';
-import { deleteContacts } from './../../redux/operations';
+import { deleteContacts } from '../../redux/contacts/operations';
 import { useDispatch, useSelector } from 'react-redux';
-import { getContacts } from './../../redux/contactsSlice';
-import { filterContacts, getFilter } from './../../redux/filterSlice';
+import { getContacts } from '../../redux/contacts/contactsSlice';
+import { filterContacts, getFilter } from '../../redux/contacts/filterSlice';
 
 export const ContactsList = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export const ContactsList = () => {
   const handleFilterChange = evt => {
     dispatch(filterContacts(evt.target.value));
   };
-  const filteredContacts = contacts.filter(({ text }) =>
+  const filteredContacts = contacts.filter(text =>
     text.name.toLowerCase().includes(filter.toLowerCase())
   );
 
@@ -27,10 +27,10 @@ export const ContactsList = () => {
       <FilterP>Find contacts by name</FilterP>
       <InputFilter type="text" value={filter} onChange={handleFilterChange} />
       <ContactsUl>
-        {filteredContacts.map(({ id, text }) => (
+        {filteredContacts.map(({ id, name, number }) => (
           <ContactsLi key={id}>
-            <span>{text.name} : </span>
-            <span> ({text.number})</span>
+            <span>{name} : </span>
+            <span> ({number})</span>
             <ContactsButton
               type="button"
               onClick={() => dispatch(deleteContacts(id))}
