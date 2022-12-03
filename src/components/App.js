@@ -1,18 +1,14 @@
-// import { ContactsList } from './ContactsList/ContactsList';
-// import { ContactForm } from './ContactForm/ContactForm';
-// import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-// import { fetchContacts } from '../redux/contacts/operations';
+
 import { useEffect, lazy } from 'react';
-// import { useDispatch } from 'react-redux';
+
 import { Route, Routes } from 'react-router-dom';
 import { Layout } from './Layout';
 import { PrivateRoute } from './PrivateRoute';
 import { RestrictedRoute } from './RestrictedRoute';
 import { refreshUser } from 'redux/auth/operations';
 import { useAuth } from 'hooks';
-
-// import { getError, getIsLoading } from '../redux/contacts/contactsSlice';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const HomePage = lazy(() => import('../pages/Home'));
 const RegisterPage = lazy(() => import('../pages/Register'));
@@ -22,14 +18,21 @@ const ContactsPage = lazy(() => import('../pages/Contacts'));
 export const App = () => {
   const dispatch = useDispatch();
   const { isRefreshing } = useAuth();
-  // const isLoading = useSelector(getIsLoading);
-  // const error = useSelector(getError);
+
   useEffect(() => {
     dispatch(refreshUser());
   }, [dispatch]);
 
   return isRefreshing ? (
-    <b>Refreshing user...</b>
+    <CircularProgress
+      size={200}
+      sx={{
+        position: 'absolute',
+        top: '40%',
+        left: '40%',
+        zIndex: 1,
+      }}
+    />
   ) : (
     <Routes>
       <Route path="/" element={<Layout />}>

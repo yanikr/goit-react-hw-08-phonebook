@@ -7,7 +7,3 @@ export default function Register() {
     </div>
   );
 }
-
-/* <Helmet>
-  <title>Registration</title>
-</Helmet> */

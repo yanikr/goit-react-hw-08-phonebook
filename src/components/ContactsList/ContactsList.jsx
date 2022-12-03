@@ -1,10 +1,11 @@
-import {
-  ContactsUl,
-  ContactsLi,
-  ContactsButton,
-  FilterP,
-  InputFilter,
-} from './ContactsList.styled';
+// import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import Divider from '@mui/material/Divider';
+import DeleteIcon from '@mui/icons-material/Delete';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import { deleteContacts } from '../../redux/contacts/operations';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts } from '../../redux/contacts/contactsSlice';
@@ -24,22 +25,38 @@ export const ContactsList = () => {
 
   return (
     <>
-      <FilterP>Find contacts by name</FilterP>
-      <InputFilter type="text" value={filter} onChange={handleFilterChange} />
-      <ContactsUl>
+      <TextField
+        id="outlined-password-input"
+        label="Filter contacts by name"
+        type="text"
+        value={filter}
+        onChange={handleFilterChange}
+      />
+
+      <List>
         {filteredContacts.map(({ id, name, number }) => (
-          <ContactsLi key={id}>
-            <span>{name} : </span>
-            <span> ({number})</span>
-            <ContactsButton
-              type="button"
-              onClick={() => dispatch(deleteContacts(id))}
-            >
-              Remove
-            </ContactsButton>
-          </ContactsLi>
+          <ListItem
+            divider
+            sx={{ display: 'flex' }}
+            disableGutters
+            key={id}
+            secondaryAction={
+              <IconButton
+                onClick={() => dispatch(deleteContacts(id))}
+                aria-label="delete"
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
+            <Divider />
+            <ListItemText primary={`${name}:`} />
+            <Divider />
+            <ListItemText primary={`(${number})`} />
+            <Divider />
+          </ListItem>
         ))}
-      </ContactsUl>
+      </List>
     </>
   );
 };
